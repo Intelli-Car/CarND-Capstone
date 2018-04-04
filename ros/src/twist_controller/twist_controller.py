@@ -24,7 +24,7 @@ class Controller(object):
         self.throttle_controller = PID(kp, ki, kd, mn, mx)
 
         tau = 0.5 # 1/(2pi*tau) = cutoff frequency
-        ts = 0.02 # Sample time
+        ts = 0.1 # Sample time. Walkthrough: 0.02
         self.vel_lpf = LowPassFilter(tau, ts)
 
         self.vehicle_mass = vehicle_mass
@@ -45,7 +45,7 @@ class Controller(object):
         if not dbw_enabled:
             self.throttle_controller.reset()
             return 0., 0., 0.
-        current_vel = self.vel_lpf.filt(current_vel)
+       # current_vel = self.vel_lpf.filt(current_vel) ##Walkthrough
 
         #rospy.logwarn("Angular vel: {0}".format(angular_vel))
         #rospy.logwarn("Target velocity: {0}".format(linear_vel))
@@ -54,6 +54,7 @@ class Controller(object):
         #rospy.logwarn("Filtered velocity: {0}".format(self.vel_lpf.get()))
 
         steering = self.yaw_controller.get_steering(linear_vel, angular_vel, current_vel)
+        
 
         vel_error = linear_vel - current_vel
         self.last_vel = current_vel
@@ -63,6 +64,7 @@ class Controller(object):
         self.last_time = current_time
 
         throttle = self.throttle_controller.step(vel_error, sample_time)
+        throttle = self.vel_lpf.filt(throttle) ##filtering out the throttle high frequency
         brake = 0
 
         if linear_vel == 0. and current_vel < 0.1:
@@ -73,5 +75,6 @@ class Controller(object):
             throttle = 0
             decel = max(vel_error, self.decel_limit)
             brake = abs(decel)*self.vehicle_mass*self.wheel_radius # Torque N*m
-
+	
+	#brake = self.vel_lpf.filt(brake) ##filtering out the brake high frequency
         return throttle, brake, steering
