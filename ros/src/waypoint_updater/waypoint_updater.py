@@ -135,6 +135,7 @@ class WaypointUpdater(object):
             self.waypoint_tree = KDTree(self.waypoints_2d)
 
     def traffic_cb(self, msg):
+        #rospy.logwarn("I am in traffic_cb")
         # TODO: Callback for /traffic_waypoint message. Implement
         self.stopline_wp_idx = msg.data
 
