@@ -122,7 +122,7 @@ class TLDetector(object):
         """
         # TODO:
         # derive this state by classification and light coordinate
-        return light.state
+        # return light.state
 
         if(not self.has_image):
             self.prev_light_loc = None
