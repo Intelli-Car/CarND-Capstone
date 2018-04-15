@@ -11,6 +11,7 @@ This is the project repo for the final project of the Udacity Self-Driving Car N
 [image6]: ./readme_images/similar_image_series.jpg "Similar Image Series"
 [image7]: ./readme_images/loss_graph_ssd_mobilenet_v1_coco_on_sim_data.jpg "Loss Graph SSD MobilenetV1 On Sim Data"
 [image8]: ./readme_images/result_ssd_mobilenet_v1_coco_on_sim_data.jpg "Result SSD MobilenetV1 on Sim Data"
+[image9]: ./readme_images/loss_graph_ssd_mobilenet_v1_coco_on_real_data.jpg "Loss Graph SSD MobilenetV1 On Real Data"
 
 ### Data Preparation
 
@@ -52,13 +53,22 @@ As seen from the above image, the distribution is not same. The `real` data has 
 
 We tried 3 models from the [Tensorflow detection model zoo](https://github.com/tensorflow/models/blob/master/research/object_detection/g3doc/detection_model_zoo.md). These models are pre-trained on the [COCO dataset](http://mscoco.org/), the [Kitti dataset](http://www.cvlibs.net/datasets/kitti/), and the [Open Images dataset](https://github.com/openimages/dataset). The 3 models we choose are ssd_mobilenet_v1_coco, ssd_inception_v2_coco and faster_rcnn_resnet101_coco. 
 
-First we tarined on the ssd_mobilenet_v1_coco model as it is the lightest and fastest model among the other models in the Tensorflow detection model zoo. The loss graph is as shown below:
+First we tarined the `sim` data on the ssd_mobilenet_v1_coco model as it is the lightest and fastest model among the other models in the Tensorflow detection model zoo. The loss graph is as shown below:
 
 ![alt text][image7]
 
 The model was trained for 5000 steps which took around 7hrs and the TotalLoss was ~0.35. Some results are shown below:
 
 ![alt text][image8]
+
+Next we trained the `real` data on same model for 5000 steps and the loss graph is as below:
+
+![alt text][image9]
+
+The TotalLoss was really bad and was around ~7.5 and this model couldnt classify any objects.
+
+
+## Installation
 
 Please use **one** of the two installation options, either native **or** docker installation.
 
