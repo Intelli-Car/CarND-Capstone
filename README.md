@@ -7,6 +7,7 @@ This is the project repo for the final project of the Udacity Self-Driving Car N
 [image2]: ./readme_images/labelImg_real_image.jpg "Label Real Image"
 [image3]: ./readme_images/labelImg_sim_image.jpg "Label Sim Image"
 [image4]: ./readme_images/labelImg_xml_real_image.jpg "XML Real Image"
+[image5]: ./readme_images/object_distribution.jpg "Object Distribution"
 
 ### Data Preparation
 
@@ -17,15 +18,25 @@ We got the images of traffic light captured by simulator's camera and that by Ca
 We used [labelImg](https://github.com/tzutalin/labelImg) to draw bounding box around the traffic light object(s) in the images and label them as either `red` or `yellow` or `green` or `unknown`
 
 Labelling `real` images:
+
 ![alt text][image2]
 
 Labelling `sim` images:
+
 ![alt text][image3]
 
 labelImg creates `.xml` for each image with information of the image itself and details of the bounding box and its label:
+
 ![alt text][image4]
 
-Using a helper function [`xml_to_csv.py`](https://github.com/datitran/raccoon_dataset/blob/master/xml_to_csv.py), all the `.xml`s are merged into a single `.csv` file. Another helper function [`generate_tfrecord.py`](https://github.com/datitran/raccoon_dataset/blob/master/generate_tfrecord.py) is used to generate the TFRecord `.record` file which is the file format needed by TensorFlow. Slight modifications were made to the above two helper functions and are placed in this rpository.
+Using a helper function [`xml_to_csv.py`](https://github.com/datitran/raccoon_dataset/blob/master/xml_to_csv.py), all the `.xml` are merged into a single `.csv` file. Another helper function [`generate_tfrecord.py`](https://github.com/datitran/raccoon_dataset/blob/master/generate_tfrecord.py) is used to generate the TFRecord `.record` file which is the file format needed by TensorFlow. Slight modifications were made to the above two helper functions and are placed in this repository.
+
+### Data Exploration
+
+The dataset has 367 1368x1096 `real` images and 280 800x600 `sim` images out of which 30% of each is used as `test` images. The `real` images maynot have any traffic light object or have only one traffic light object. The `sim` images too maynot have any traffic light object or have one or more traffic light object. So the number of objects for classification is 347 `real` objects and 867 `sim` objects. Below is the distribution of objects based on label:
+
+![alt text][image5]
+
 
 Please use **one** of the two installation options, either native **or** docker installation.
 
