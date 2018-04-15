@@ -9,6 +9,8 @@ This is the project repo for the final project of the Udacity Self-Driving Car N
 [image4]: ./readme_images/labelImg_xml_real_image.jpg "XML Real Image"
 [image5]: ./readme_images/object_distribution.jpg "Object Distribution"
 [image6]: ./readme_images/similar_image_series.jpg "Similar Image Series"
+[image7]: ./readme_images/loss_graph_ssd_mobilenet_v1_coco_on_sim_data.jpg "Loss Graph SSD MobilenetV1 On Sim Data"
+[image8]: ./readme_images/result_ssd_mobilenet_v1_coco_on_sim_data.jpg "Result SSD MobilenetV1 on Sim Data"
 
 ### Data Preparation
 
@@ -44,6 +46,19 @@ The dataset has 367 1368x1096 `real` images and 280 800x600 `sim` images out of 
 
 ![alt text][image5]
 
+As seen from the above image, the distribution is not same. The `real` data has more of `green` label and the `sim` data has more of `red` label. This imbalance in the dataset will lead the model to be biased towards the label which is more in number. This issue can be fixed by adding more of those images with labels which are less in number. While adding the images, care should be taken not to add similar images but to add images with translation and/or images with different brightness/saturation/hue etc.
+
+### Model
+
+We tried 3 models from the [Tensorflow detection model zoo](https://github.com/tensorflow/models/blob/master/research/object_detection/g3doc/detection_model_zoo.md). These models are pre-trained on the [COCO dataset](http://mscoco.org/), the [Kitti dataset](http://www.cvlibs.net/datasets/kitti/), and the [Open Images dataset](https://github.com/openimages/dataset). The 3 models we choose are ssd_mobilenet_v1_coco, ssd_inception_v2_coco and faster_rcnn_resnet101_coco. 
+
+First we tarined on the ssd_mobilenet_v1_coco model as it is the lightest and fastest model among the other models in the Tensorflow detection model zoo. The loss graph is as shown below:
+
+![alt text][image7]
+
+The model was trained for 5000 steps which took around 7hrs and the TotalLoss was ~0.35. Some results are shown below:
+
+![alt text][image8]
 
 Please use **one** of the two installation options, either native **or** docker installation.
 
