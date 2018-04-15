@@ -14,8 +14,11 @@ We considered using an additional classification layer which would classify the 
 The process was use a grey-scale version of the image, and do a row-sum of the pixel values (brighter pixels have higher values). After this we calculate the brightness for different sections of the image and in this way we create features for a supervised machine learning model. 
 
 The result for red, yellow and green lights are as follows (respectively)
+
 ![red](./readme_img/red.png) 
+
 ![yellow](./readme_img/yellow.png) 
+
 ![green](./readme_img/green.png) 
 
 The randomforsest classificatier model we built had a 81% accuracy on the first attempt, based only on this featureset - which is not bad. But it didn't seem to add value to the RCNN model - it already proved to be working well :) 
