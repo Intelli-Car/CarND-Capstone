@@ -1,5 +1,32 @@
 This is the project repo for the final project of the Udacity Self-Driving Car Nanodegree: Programming a Real Self-Driving Car. For more information about the project, see the project introduction [here](https://classroom.udacity.com/nanodegrees/nd013/parts/6047fe34-d93c-4f50-8336-b70ef10cb4b2/modules/e1a23b06-329a-4684-a717-ad476f0d8dff/lessons/462c933d-9f24-42d3-8bdc-a08a5fc866e4/concepts/5ab4b122-83e6-436d-850f-9f4d26627fd9).
 
+
+[//]: # (Image References)
+
+[image1]: ./readme_images/dataset_folder_structure.jpg "Dataset Folder Structure"
+[image2]: ./readme_images/labelImg_real_image.jpg "Label Real Image"
+[image3]: ./readme_images/labelImg_sim_image.jpg "Label Sim Image"
+[image4]: ./readme_images/labelImg_xml_real_image.jpg "XML Real Image"
+
+### Data Preparation
+
+We got the images of traffic light captured by simulator's camera and that by Carla's(Udacity's self driving car) camera from <link to the dataset>. Then placed simulator and real car's images under `sim_data` and `real_data` folder respectively. Further divided each of them into `train` and `test` folders with 30% images in `test` folder.
+
+![alt text][image1]
+
+We used [labelImg](https://github.com/tzutalin/labelImg) to draw bounding box around the traffic light object(s) in the images and label them as either `red` or `yellow` or `green` or `unknown`
+
+Labelling `real` images:
+![alt text][image2]
+
+Labelling `sim` images:
+![alt text][image3]
+
+labelImg creates `.xml` for each image with information of the image itself and details of the bounding box and its label:
+![alt text][image4]
+
+Using a helper function [`xml_to_csv.py`](https://github.com/datitran/raccoon_dataset/blob/master/xml_to_csv.py), all the `.xml`s are merged into a single `.csv` file. Another helper function [`generate_tfrecord.py`](https://github.com/datitran/raccoon_dataset/blob/master/generate_tfrecord.py) is used to generate the TFRecord `.record` file which is the file format needed by TensorFlow. Slight modifications were made to the above two helper functions and are placed in this rpository.
+
 Please use **one** of the two installation options, either native **or** docker installation.
 
 ### Native Installation
