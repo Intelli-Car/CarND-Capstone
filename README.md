@@ -8,12 +8,19 @@ This is the project repo for the final project of the Udacity Self-Driving Car N
 [image3]: ./readme_images/labelImg_sim_image.jpg "Label Sim Image"
 [image4]: ./readme_images/labelImg_xml_real_image.jpg "XML Real Image"
 [image5]: ./readme_images/object_distribution.jpg "Object Distribution"
+[image6]: ./readme_images/similar_image_series.jpg "Similar Image Series"
 
 ### Data Preparation
 
-We got the images of traffic light captured by simulator's camera and that by Carla's(Udacity's self driving car) camera from <link to the dataset>. Then placed simulator and real car's images under `sim_data` and `real_data` folder respectively. Further divided each of them into `train` and `test` folders with 30% images in `test` folder.
+We got the images of traffic light captured by simulator's camera and that by Carla's(Udacity's self driving car) camera from <link to the dataset>. We placed simulator and real car's images under `sim_data` and `real_data` folder respectively. Further divided each of them into `train` and `test` folders with 30% images in `test` folder. 
 
 ![alt text][image1]
+
+This dataset had a lot of redundant images, meaning, the images were very similar to each other. A series of similar images is shown below:
+
+![alt text][image6]
+
+These images wouldnt add any "more" information and a model wouldnt learn anything new from these similar images. So we decided to remove them from the database.
 
 We used [labelImg](https://github.com/tzutalin/labelImg) to draw bounding box around the traffic light object(s) in the images and label them as either `red` or `yellow` or `green` or `unknown`
 
