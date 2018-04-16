@@ -30,7 +30,8 @@ TODO (for Yousuf and Aaron): Stopline location for each traffic light.
 Number of waypoints we will publish, let keep it small to drive smoothly until
 we find a reason to make it longer i.e. smooth braking ?
 '''
-LOOKAHEAD_WPS = 60 # Number of waypoints we will publish, let keep it small to drive smoothly until
+# Number of waypoints we will publish, let keep it small to drive smoothly until
+LOOKAHEAD_WPS = 50 # Number of waypoints we will publish, let keep it small to drive smoothly until
 MAX_DECEL = 0.5
 
 
