@@ -134,6 +134,66 @@ class TLDetector(object):
         #Get classification
         return self.light_classifier.get_classification(cv_image)
 
+
+
+    def project_from_3d_to_2d(self, point_in_world):
+        """
+        Projects a point from 3d world coordinates to 2d camera location
+
+        Args:
+            point_in_world: location of ppint in world
+
+        Returns:
+            x: x-coordinate of target point in image
+            y: y-coordinate of target point in image
+
+        """
+
+        fx = self.config["camera_info"]["focal_length_x"]
+        fy = self.config["camera_info"]["focal_length_y"]
+
+        image_width = self.config["camera_info"]["image_width"]
+        image_height = self.config["camera_info"]["image_height"]
+
+        x_center = image_width / 2
+        y_center = image_height / 2
+
+        trans = rot = None
+        x = y = 0
+
+        try:
+            now = rospy.Time.now()
+            self.listener.waitForTransform("/base_link", "/world", now, rospy.Duration(1.0))
+            (trans, rot) = self.listener.lookupTransform("/base_link",          "/world", now)
+
+        except (tf.Exception, tf.LookupException, tf.ConnectivityException):
+            rospy.logerr("Failed to find camera to map transform")
+            return None, None
+
+
+            if(trans and rot):
+                rpy = tf.transformations.euler_from_quaternion(rot) # quaternion to rotation matrix at z-axis
+                yaw = rpy[2]
+
+            (ptx, pty, ptz) = (point_in_world.position.x, point_in_world.position.y, point_in_world.position.z)
+
+
+            # rotate
+            point_to_cam = (ptx * math.cos(yaw) - pty * math.sin(yaw),
+                            ptx * math.sin(yaw) + pty * math.cos(yaw),
+                            ptz)
+
+            # translate
+            point_to_cam = [sum(x) for x in zip(point_to_cam, trans)]
+
+            # project
+            x = -fx * point_to_cam[1]/point_to_cam[0]
+            y = -fy * point_to_cam[2]/point_to_cam[0]
+            
+
+        return (int(x + x_center), int(y + y_center)) 
+
+
     def process_traffic_lights(self):
         """Finds closest visible traffic light, if one exists, and determines its
             location and color
