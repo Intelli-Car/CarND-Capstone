@@ -182,6 +182,7 @@ class WaypointUpdater(object):
 
 
     def traffic_cb(self, msg):
+        # TODO: Callback for /traffic_waypoint message. Implement
         ''' Callback for /traffic_waypoint message.'''
         self.stopline_wp_idx = msg.data
 
