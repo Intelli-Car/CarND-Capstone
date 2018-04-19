@@ -1,7 +1,11 @@
 # Traffic light detection 
 
 ## Result 
-Refer [notebook](./tl_detection.ipynb)
+[notebook](./tl_detection.ipynb)
+
+## frozen models
+1. [Download from google drive](https://drive.google.com/open?id=1-d8KBPTXgwxt2Dbsl2Uk89KuW_qR11dA)
+1. Extracts to `frozen_models/`
 
 ## Commands for training and exporting for inference
 For copy and paste. :)

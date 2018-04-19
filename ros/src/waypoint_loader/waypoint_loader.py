@@ -51,6 +51,9 @@ class WaypointLoader(object):
                 p.pose.pose.position.z = float(wp['z'])
                 q = self.quaternion_from_yaw(float(wp['yaw']))
                 p.pose.pose.orientation = Quaternion(*q)
+
+                # Setting the maximum allowed velocity in mile per second
+                # for all these way-points
                 p.twist.twist.linear.x = float(self.velocity)
 
                 waypoints.append(p)
