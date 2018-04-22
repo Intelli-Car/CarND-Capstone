@@ -28,6 +28,9 @@
  *  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
+/*
+ * TODO: update this
+ */
 #include "pure_pursuit_core.h"
 
 constexpr int LOOP_RATE = 30; //processing frequency
