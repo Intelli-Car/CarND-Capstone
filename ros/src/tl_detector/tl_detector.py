@@ -11,12 +11,15 @@ import tf
 import cv2
 import yaml
 from scipy.spatial import KDTree
+import numpy as np
 
 STATE_COUNT_THRESHOLD = 3
 
 class TLDetector(object):
     def __init__(self):
         rospy.init_node('tl_detector')
+
+	self.sim_testing = bool(rospy.get_param("~sim_testing", True))
 
         self.pose = None
         self.waypoints = None
@@ -91,6 +94,8 @@ class TLDetector(object):
             self.last_state = self.state
             light_wp = light_wp if state == TrafficLight.RED else -1
             self.last_wp = light_wp
+	    if state == TrafficLight.RED:
+	       rospy.logwarn("Published Red light")
             self.upcoming_red_light_pub.publish(Int32(light_wp))
         else:
             self.upcoming_red_light_pub.publish(Int32(self.last_wp))
@@ -129,9 +134,31 @@ class TLDetector(object):
             return False
 
         cv_image = self.bridge.imgmsg_to_cv2(self.camera_image, "bgr8")
+        width, height, _ = cv_image.shape
+	
+	#TODO use light location to zoom in on traffic light in image
+	if self.sim_testing:
+           x_start = int(width * 0.20)
+           x_end = int(width * 0.80)
+           y_start = int(height * 0.10)
+           y_end = int(height * 0.70)
+           #rospy.logwarn("In Simulation mode")
+	else:
+           x_start = 0
+           x_end = 800
+           y_start = 100
+           y_end = 400
+
+        processed_img = cv_image[y_start:y_end, x_start:x_end]
+
+        #Convert image to RGB format
+        processed_img = cv2.cvtColor(processed_img, cv2.COLOR_BGR2RGB)
+	
+        #convert image to np array
+        img_full_np = np.asarray(processed_img, dtype="uint8")
 
         #Get classification
-        return self.light_classifier.get_classification(cv_image)
+        return self.light_classifier.get_classification(img_full_np)
 
     def process_traffic_lights(self):
         """Finds closest visible traffic light, if one exists, and determines its
@@ -169,7 +196,7 @@ class TLDetector(object):
 
         if closest_light:
             state = self.get_light_state(closest_light)
-            #rospy.logwarn("Closest Light state {}".format(state))
+            rospy.logwarn("Closest Light state {}".format(state))
             return line_wp_idx, state
 
         return -1, TrafficLight.UNKNOWN
