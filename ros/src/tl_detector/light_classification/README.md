@@ -26,17 +26,19 @@ python object_detection/builders/model_builder_test.py
 ```
 # From tensorflow/models/research/
 # for real data
-python object_detection/train.py --pipeline_config_path config/real/faster_rcnn_resnet101_tl.config --train_dir train_dir/real/faster_rcnn_resnet101_coco_2018_01_28
+python object_detection/train.py --logtostderr --pipeline_config_path config/real/faster_rcnn_resnet101_tl.config --train_dir train_dir/real/faster_rcnn_resnet101_coco_2018_01_28
+
 # for simulator data
-python object_detection/train.py --pipeline_config_path config/sim/faster_rcnn_resnet101_tl.config --train_dir train_dir/sim/faster_rcnn_resnet101_coco_2018_01_28
+python object_detection/train.py --logtostderr --pipeline_config_path config/sim/faster_rcnn_resnet101_tl.config --train_dir train_dir/sim/faster_rcnn_resnet101_coco_2018_01_28
 ```
 ##### Export frozen models
 ```
 # From tensorflow/models/research/
 # for real data
-python object_detection/export_inference_graph.py --pipeline_config_path config/real/faster_rcnn_resnet101_tl.config --trained_checkpoint_prefix train_dir/real/faster_rcnn_resnet101_coco_2018_01_28/model.ckpt-87789 --output_directory frozen_models/real/faster_rcnn_resnet101_coco_2018_01_28
+python object_detection/export_inference_graph.py --pipeline_config_path config/real/faster_rcnn_resnet101_tl.config --trained_checkpoint_prefix train_dir/real/faster_rcnn_resnet101_coco_2018_01_28/model.ckpt-{#####} --output_directory frozen_models/real/faster_rcnn_resnet101_coco_2018_01_28
+
 # for simulator data
-python object_detection/export_inference_graph.py --pipeline_config_path config/faster_rcnn_resnet101_tl.config --trained_checkpoint_prefix train_dir/sim/faster_rcnn_resnet101_coco_2018_01_28/model.ckpt- --output_directory frozen_models/sim/faster_rcnn_resnet101_coco_2018_01_28
+python object_detection/export_inference_graph.py --pipeline_config_path config/sim/faster_rcnn_resnet101_tl.config --trained_checkpoint_prefix train_dir/sim/faster_rcnn_resnet101_coco_2018_01_28/model.ckpt-{#####} --output_directory frozen_models/sim/faster_rcnn_resnet101_coco_2018_01_28
 ```
 
 #### ssd_inception_v2_coco_2017_11_17
@@ -79,3 +81,4 @@ python object_detection/export_inference_graph.py --pipeline_config_path config/
 export PYTHONPATH=$PYTHONPATH:`pwd`:`pwd`/slim
 tensorboard --logdir=train_dir/real/faster_rcnn_resnet101_coco_2018_01_28
 ```
+

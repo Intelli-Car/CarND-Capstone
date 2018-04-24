@@ -128,7 +128,15 @@ class TLDetector(object):
             self.prev_light_loc = None
             return False
 
-        cv_image = self.bridge.imgmsg_to_cv2(self.camera_image, "bgr8")
+        need_convert = True
+        if hasattr(self.camera_image, 'encoding'):
+            if self.camera_image.encoding == 'rgb8':
+                need_convert = false;
+
+        cv_image = self.bridge.imgmsg_to_cv2(self.camera_image, self.camera_image.encoding)
+        # cv_image = self.bridge.imgmsg_to_cv2(self.camera_image, "bgr8")
+        if need_convert :
+            cv_image = cv2.cvtColor(cv_image, cv2.COLOR_BGR2RGB)
 
         #Get classification
         return self.light_classifier.get_classification(cv_image)

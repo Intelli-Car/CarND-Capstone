@@ -7,16 +7,16 @@ import time
 import os
 
 
-base_dir = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'frozen_models')
-SSD_INCEPTION_GRAPH_FILE = os.path.join(base_dir, 'ssd_inception_v2_coco_2017_11_17', 'frozen_inference_graph.pb')
-SSD_MOBILE_V2_GRAPH_FILE = os.path.join(base_dir, 'ssd_mobilenet_v2_coco_2018_03_29', 'frozen_inference_graph.pb')
-FASTER_RCNN_GRAPH_FILE = os.path.join(base_dir, 'faster_rcnn_resnet101_coco_2018_01_28', 'frozen_inference_graph.pb')
+base_dir = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'frozen_models', 'real')
+# GRAPH_FILE = os.path.join(base_dir, 'ssd_inception_v2_coco_2017_11_17', 'frozen_inference_graph.pb')
+# GRAPH_FILE = os.path.join(base_dir, 'ssd_mobilenet_v2_coco_2018_03_29', 'frozen_inference_graph.pb')
+GRAPH_FILE = os.path.join(base_dir, 'faster_rcnn_resnet101_coco_2018_01_28', 'frozen_inference_graph.pb')
 
 
 class TLClassifier(object):
     def __init__(self):
         #TODO load classifier
-        detection_graph = self.load_graph(FASTER_RCNN_GRAPH_FILE)
+        detection_graph = self.load_graph(GRAPH_FILE)
 
         # The input placeholder for the image.
         # `get_tensor_by_name` returns the Tensor with the associated name in the Graph.
@@ -92,15 +92,20 @@ class TLClassifier(object):
         boxes, scores, classes = self.filter_boxes(confidence_cutoff, boxes, scores, classes)
 
         i = 0
+        result_str = 'unknown'
+        score = 0
         if boxes.shape[i] > 0:
             if classes[i] == 1: #'Green':
                 result = TrafficLight.GREEN
+                result_str = 'Green'
             elif classes[i]  == 2: #'Red':
                 result = TrafficLight.RED
+                result_str = 'Red'
             elif classes[i]  == 3: #'Yellow':
                 result = TrafficLight.YELLOW
+                result_str = 'Yellow'
 
-        #     rospy.logwarn('highest class {}, score {}'.format(classes[i], scores[i]))
-        # rospy.logwarn('classification result {}, time {} ms'.format(result, time_diff))
+            score = scores[i]
+        # rospy.logwarn('classification result {}, score {:.3f}, time {:.2f} ms'.format(result_str, score, time_diff))
 
         return result
