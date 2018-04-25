@@ -131,10 +131,11 @@ class TLDetector(object):
         need_convert = True
         if hasattr(self.camera_image, 'encoding'):
             if self.camera_image.encoding == 'rgb8':
-                need_convert = false;
+                need_convert = False;
 
         cv_image = self.bridge.imgmsg_to_cv2(self.camera_image, self.camera_image.encoding)
-        # cv_image = self.bridge.imgmsg_to_cv2(self.camera_image, "bgr8")
+
+        # rospy.logwarn('camera_image.encoding {}, need_convert {}'.format(self.camera_image.encoding, need_convert))
         if need_convert :
             cv_image = cv2.cvtColor(cv_image, cv2.COLOR_BGR2RGB)
 
