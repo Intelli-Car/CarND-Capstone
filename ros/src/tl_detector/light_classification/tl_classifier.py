@@ -7,7 +7,7 @@ import time
 import os
 
 
-base_dir = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'frozen_models', 'real')
+base_dir = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'frozen_models', 'sim')
 # GRAPH_FILE = os.path.join(base_dir, 'ssd_inception_v2_coco_2017_11_17', 'frozen_inference_graph.pb')
 # GRAPH_FILE = os.path.join(base_dir, 'ssd_mobilenet_v2_coco_2018_03_29', 'frozen_inference_graph.pb')
 GRAPH_FILE = os.path.join(base_dir, 'faster_rcnn_resnet101_coco_2018_01_28', 'frozen_inference_graph.pb')
