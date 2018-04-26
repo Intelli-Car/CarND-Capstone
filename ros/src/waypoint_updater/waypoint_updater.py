@@ -121,7 +121,9 @@ class WaypointUpdater(object):
         base_waypoints = self.base_lane.waypoints[closest_idx:farthest_idx]
 
         if self.stopline_wp_idx == -1 or (self.stopline_wp_idx >= farthest_idx):
-            #lane.waypoints = base_waypoints
+            
+	    #If no traffic light close by within the lookahead limit
+            # just check the max speed and let the car move on
             lane.waypoints = self.set_waypoints_velocities(base_waypoints, -1)
         else:
             lane.waypoints = self.set_waypoints_velocities(base_waypoints, closest_idx)
@@ -142,24 +144,41 @@ class WaypointUpdater(object):
             p.pose = wp.pose
 
             if closest_idx == -1:
-                 p.twist.twist.linear.x = self.max_velocity
+                
+		# take the minimum of current velocity and max allowed. If we are at the
+		# end of the waypoints the current velocity would gradually decreases as
+                # has done at waypoint_loader and the car will stop, in any location
+		# other than a traffic light follow  the max speed limit.
+		p.twist.twist.linear.x = min(wp.twist.twist.linear.x, self.max_velocity)
             else:
-                # Two waypoints back from line so front of car stops at line
+                # Three waypoints back from stop line so front of car stops at stop line
                 stop_idx = max(self.stopline_wp_idx - closest_idx -3, 0)
-                dist = self.distance(waypoints, i, stop_idx)
+                vel = 0.0
+		if i > stop_idx:
+			
+			# Stop Immediately as the car passed the stop line
+			#rospy.logwarn("Car already passed the stop line, STOP!")	
+			vel = 0.0
+		else:
+			dist = self.distance(waypoints, i, stop_idx)
 
-                #slow gradually while not exceeding the jerk
-                vel = math.sqrt(2* MAX_DECEL * dist)
-                if vel < 1.0 :
-                    vel = 0.0
+                	#slow gradually while not exceeding the jerk
+                	vel = math.sqrt(2* MAX_DECEL * dist)
+                	if vel < 1.0 :
+                    		vel = 0.0
                 p.twist.twist.linear.x = min(vel, wp.twist.twist.linear.x)
 
             temp.append(p)
+
         return temp
 
     def pose_cb(self, msg):
         ''' Callback for receving current position of the car '''
         self.pose = msg
+
+    def kmph2mps(self, velocity_kmph):
+        return (velocity_kmph * 1000.) / (60. * 60.)
+
 
     def waypoints_cb(self, waypoints):
         ''' Callback for receiving the way points for the track.
@@ -170,8 +189,12 @@ class WaypointUpdater(object):
             search of closest way point in O(logn) time.
             '''
 
-        self.max_velocity = self.get_waypoint_velocity(waypoints.waypoints[0])
-        self.base_lane = waypoints
+	max_vel = self.kmph2mps(rospy.get_param('/waypoint_loader/velocity'))
+        if self.max_velocity != max_vel:
+	    self.max_velocity = max_vel
+            rospy.logwarn("Max velocity is set to {} meter per second".format(self.max_velocity))
+
+	self.base_lane = waypoints
         self.base_lane_size = np.shape(waypoints.waypoints)[0]
         self.lookahead_wps = min(LOOKAHEAD_WPS, self.base_lane_size//2)
 
@@ -182,9 +205,11 @@ class WaypointUpdater(object):
 
 
     def traffic_cb(self, msg):
-        # TODO: Callback for /traffic_waypoint message. Implement
+        # Callback for /traffic_waypoint message. Implement
         ''' Callback for /traffic_waypoint message.'''
-        self.stopline_wp_idx = msg.data
+
+        # Populate the next traffic light's stop line index
+	self.stopline_wp_idx = msg.data
 
     def obstacle_cb(self, msg):
         # TODO: Callback for /obstacle_waypoint message. We will implement it later
@@ -201,7 +226,10 @@ class WaypointUpdater(object):
         waypoints[waypoint].twist.twist.linear.x = velocity
 
     def distance(self, waypoints, wp1, wp2):
-        ''' Calculate the Euclidean distance between 2 waypints '''
+        ''' 
+	Calculate the Euclidean distance between 2 waypoints, wp1 & wp2 are first 
+	and second waypoint index accordingly
+	'''
         dist = 0
         dl = lambda a, b: math.sqrt((a.x-b.x)**2 + (a.y-b.y)**2  + (a.z-b.z)**2)
         for i in range(wp1, wp2+1):
