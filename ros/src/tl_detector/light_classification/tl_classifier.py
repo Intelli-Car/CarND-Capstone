@@ -7,10 +7,10 @@ import time
 import os
 
 
-base_dir = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'Intelli-car_frozen_models', 'sim')
+base_dir = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'frozen_models', 'sim')
 # GRAPH_FILE = os.path.join(base_dir, 'ssd_inception_v2_coco_2017_11_17', 'frozen_inference_graph.pb')
-GRAPH_FILE = os.path.join(base_dir, 'ssd_mobilenet_v2_coco_2018_03_29', 'frozen_inference_graph.pb')
-#GRAPH_FILE = os.path.join(base_dir, 'faster_rcnn_resnet101_coco_2018_01_28', 'frozen_inference_graph.pb')
+# GRAPH_FILE = os.path.join(base_dir, 'ssd_mobilenet_v2_coco_2018_03_29', 'frozen_inference_graph.pb')
+GRAPH_FILE = os.path.join(base_dir, 'faster_rcnn_resnet101_coco_2018_01_28', 'frozen_inference_graph.pb')
 
 
 class TLClassifier(object):
@@ -86,8 +86,8 @@ class TLClassifier(object):
         scores = np.squeeze(scores)
         classes = np.squeeze(classes)
 
-        #confidence_cutoff = 0.8 #faster rcnn
-        confidence_cutoff = 0.6 #ssd inception
+        confidence_cutoff = 0.8 #faster rcnn
+        # confidence_cutoff = 0.6 #ssd inception
         # Filter boxes with a confidence score less than `confidence_cutoff`
         boxes, scores, classes = self.filter_boxes(confidence_cutoff, boxes, scores, classes)
 
@@ -106,6 +106,6 @@ class TLClassifier(object):
                 result_str = 'Yellow'
 
             score = scores[i]
-        # rospy.logwarn('{}, score {:.4f}, time {:.1f} ms'.format(result_str, score, time_diff))
+        rospy.logwarn('{}, score {:.4f}, time {:.1f} ms'.format(result_str, score, time_diff))
 
         return result

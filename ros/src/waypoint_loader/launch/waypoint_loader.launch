@@ -3,7 +3,7 @@
     <node pkg="waypoint_loader" type="waypoint_loader.py" name="waypoint_loader">
         <param name="path" value="$(find styx)../../../data/wp_yaw_const.csv" />
         <!-- Velocity is in kilometer per second -->
-	<param name="velocity" value="20" />
+	<param name="velocity" value="40" />
         <!-- <param name="path" value="$(find styx)../../../data/churchlot_with_cars.csv" /> -->
     </node>
 </launch>
