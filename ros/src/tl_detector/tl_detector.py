@@ -106,7 +106,6 @@ class TLDetector(object):
             int: index of the closest waypoint in self.waypoints
 
         """
-        #TODO implement
         closest_idx = self.waypoint_tree.query([x,y], 1)[1]
         return closest_idx
 
@@ -120,7 +119,7 @@ class TLDetector(object):
             int: ID of traffic light color (specified in styx_msgs/TrafficLight)
 
         """
-        # TODO:
+	# 
         # derive this state by classification and light coordinate
         #return light.state
 
@@ -131,10 +130,9 @@ class TLDetector(object):
         need_convert = True
         if hasattr(self.camera_image, 'encoding'):
             if self.camera_image.encoding == 'rgb8':
-                need_convert = false;
+                need_convert = False;
 
         cv_image = self.bridge.imgmsg_to_cv2(self.camera_image, self.camera_image.encoding)
-        # cv_image = self.bridge.imgmsg_to_cv2(self.camera_image, "bgr8")
         if need_convert :
             cv_image = cv2.cvtColor(cv_image, cv2.COLOR_BGR2RGB)
 
@@ -146,10 +144,11 @@ class TLDetector(object):
             location and color
 
         Returns:
-            int: index of waypoint closes to the upcoming stop line for a traffic light (-1 if none exists)
+            int: index of waypoint closes to the upcoming stop line for a traffic light 
+	    (-1 if none exists)
             int: ID of traffic light color (specified in styx_msgs/TrafficLight)
-
         """
+
         closest_light = None
         line_wp_idx = None
 
@@ -158,7 +157,7 @@ class TLDetector(object):
         if(self.pose):
             car_wp_idx = self.get_closest_waypoint(self.pose.pose.position.x, self.pose.pose.position.y)
 
-            #TODO find the closest visible traffic light (if one exists)
+            #find the closest visible traffic light (if one exists)
             #diff = len(self.waypoints.waypoints)
             # checking redlight for 50 waypoints ahead is good for detection
             diff = 50
@@ -168,7 +167,7 @@ class TLDetector(object):
 
                 temp_wp_idx = self.get_closest_waypoint(line[0], line[1])
 
-                #find closest stop lne waypoint index
+                #Find the closest stop line waypoint index
                 d = temp_wp_idx - car_wp_idx
                 if d >= 0 and d < diff:
                     diff = d

@@ -79,6 +79,7 @@ class Controller(object):
         elif vel_error < 0.:
             decel = max(vel_error, self.decel_limit)
             brake = 0.2*abs(decel)*self.vehicle_mass*self.wheel_radius # Torque N*m
+            #brake = abs(decel)*self.vehicle_mass*self.wheel_radius # Torque N*m
 
             #rospy.logwarn("throttle {} vel_error {} brake {} brake_deadband {} cur_vel {} liner_vel {}".format(
             #              throttle, vel_error, brake, self.brake_deadband, current_vel, linear_vel))
