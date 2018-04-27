@@ -2,9 +2,8 @@
 
 import rospy
 from geometry_msgs.msg import PoseStamped
-from styx_msgs.msg import Lane, Waypoint
+from styx_msgs.msg import Lane, Waypoint, Light, TrafficLight
 from scipy.spatial import KDTree
-from std_msgs.msg import Int32
 
 import math
 import numpy as np
@@ -49,6 +48,7 @@ class WaypointUpdater(object):
 
         # Stop line for a traffic light
         self.stopline_wp_idx = -1
+        self.stopline_wp_state = TrafficLight.UNKNOWN
 
         # Number of waypoints that we will be looking ahead
         self.lookahead_wps = 0
@@ -60,7 +60,7 @@ class WaypointUpdater(object):
 
         rospy.Subscriber('/current_pose', PoseStamped, self.pose_cb)
         rospy.Subscriber('/base_waypoints', Lane, self.waypoints_cb)
-        rospy.Subscriber('/traffic_waypoint', Int32, self.traffic_cb)
+        rospy.Subscriber('/traffic_waypoint', Light, self.traffic_cb)
 
         # TODO: Add a subscriber for /obstacle_waypoint below
 
@@ -154,18 +154,27 @@ class WaypointUpdater(object):
                 # Three waypoints back from stop line so front of car stops at stop line
                 stop_idx = max(self.stopline_wp_idx - closest_idx -3, 0)
                 vel = 0.0
-		if i > stop_idx:
-			
-			# Stop Immediately as the car passed the stop line
-			#rospy.logwarn("Car already passed the stop line, STOP!")	
-			vel = 0.0
-		else:
-			dist = self.distance(waypoints, i, stop_idx)
+		dist = self.distance(waypoints, i, stop_idx)
 
-                	#slow gradually while not exceeding the jerk
-                	vel = math.sqrt(2* MAX_DECEL * dist)
-                	if vel < 1.0 :
-                    		vel = 0.0
+		if self.stopline_wp_state == TrafficLight.YELLOW:
+			
+			# For yellow light, slow down a little bit 
+			vel = math.sqrt(MAX_DECEL * dist)
+			#rospy.logwarn("Yellow light, slowing down")	
+			
+		if self.stopline_wp_state == TrafficLight.RED:
+ 			
+			if i > stop_idx:
+			
+				# Stop Immediately as the car passed the stop line
+				#rospy.logwarn("Car already passed the stop line, STOP!")	
+				vel = 0.0
+			else:
+                		#slow gradually while not exceeding the jerk
+                		vel = math.sqrt(2* MAX_DECEL * dist)
+                		if vel < 1.0:
+                    			vel = 0.0
+
                 p.twist.twist.linear.x = min(vel, wp.twist.twist.linear.x)
 
             temp.append(p)
@@ -209,8 +218,11 @@ class WaypointUpdater(object):
         ''' Callback for /traffic_waypoint message.'''
 
         # Populate the next traffic light's stop line index
-	self.stopline_wp_idx = msg.data
-
+	self.stopline_wp_idx = msg.index
+	
+	# Save the next traffic light's color
+	self.stopline_wp_state = msg.state
+			
     def obstacle_cb(self, msg):
         # TODO: Callback for /obstacle_waypoint message. We will implement it later
         pass
