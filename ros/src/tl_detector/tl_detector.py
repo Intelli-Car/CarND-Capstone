@@ -1,9 +1,8 @@
 #!/usr/bin/env python
 import rospy
-from std_msgs.msg import Int32
 from geometry_msgs.msg import PoseStamped, Pose
 from styx_msgs.msg import TrafficLightArray, TrafficLight
-from styx_msgs.msg import Lane
+from styx_msgs.msg import Lane, Light
 from sensor_msgs.msg import Image
 from cv_bridge import CvBridge
 from light_classification.tl_classifier import TLClassifier
@@ -45,7 +44,7 @@ class TLDetector(object):
         config_string = rospy.get_param("/traffic_light_config")
         self.config = yaml.load(config_string)
 
-        self.upcoming_red_light_pub = rospy.Publisher('/traffic_waypoint', Int32, queue_size=1)
+        self.upcoming_red_light_pub = rospy.Publisher('/traffic_waypoint', Light, queue_size=1)
 
         self.bridge = CvBridge()
         self.light_classifier = TLClassifier()
@@ -77,7 +76,8 @@ class TLDetector(object):
         self.has_image = True
         self.camera_image = msg
         light_wp, state = self.process_traffic_lights()
-
+	light = Light()
+ 
         '''
         Publish upcoming red lights at camera frequency.
         Each predicted state has to occur `STATE_COUNT_THRESHOLD` number
@@ -89,11 +89,17 @@ class TLDetector(object):
             self.state = state
         elif self.state_count >= STATE_COUNT_THRESHOLD:
             self.last_state = self.state
-            light_wp = light_wp if state == TrafficLight.RED else -1
-            self.last_wp = light_wp
-            self.upcoming_red_light_pub.publish(Int32(light_wp))
+	    if state != TrafficLight.RED and state != TrafficLight.YELLOW:
+            	light_wp = -1
+
+            self.last_wp = light_wp	    
+	    light.index = light_wp
+	    light.state = state 
+            self.upcoming_red_light_pub.publish(light)
         else:
-            self.upcoming_red_light_pub.publish(Int32(self.last_wp))
+	    light.index = self.last_wp
+	    light.state = self.last_state 
+            self.upcoming_red_light_pub.publish(light)
         self.state_count += 1
 
     def get_closest_waypoint(self, x, y):
