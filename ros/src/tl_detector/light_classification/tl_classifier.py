@@ -7,16 +7,10 @@ import time
 import os
 
 
-base_dir = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'frozen_models', 'sim')
-# GRAPH_FILE = os.path.join(base_dir, 'ssd_inception_v2_coco_2017_11_17', 'frozen_inference_graph.pb')
-# GRAPH_FILE = os.path.join(base_dir, 'ssd_mobilenet_v2_coco_2018_03_29', 'frozen_inference_graph.pb')
-GRAPH_FILE = os.path.join(base_dir, 'faster_rcnn_resnet101_coco_2018_01_28', 'frozen_inference_graph.pb')
-
-
 class TLClassifier(object):
-    def __init__(self):
+    def __init__(self, model_path):
         #TODO load classifier
-        detection_graph = self.load_graph(GRAPH_FILE)
+        detection_graph = self.load_graph(model_path)
 
         # The input placeholder for the image.
         # `get_tensor_by_name` returns the Tensor with the associated name in the Graph.
