@@ -48,7 +48,7 @@ part of a 'Self Driving' vehicle susbsystems
 #### 2.1 Traffic Light detection Node
 This node takes in data from the /image_color, /current_pose, and /base_waypoints topics and publishes the locations to stop for red traffic lights to the /traffic_waypoint topic.
 
-[alt text][image10]
+![alt text][image10]
 
 Here we introduce a new ROS message named Light (int32 index, uint8 sate) to publish not only the index of the closest traffic light but also the state(COLOR) of it into node /traffic_waypoint. Waypoint updater node (see bellow) will use this information
 to slow down for a closest Yellow or RED light and will eventually stop when the closest light is RED; in all other cases (GREEN, UNKNOWN) the car will continue to move on with in given Speed limit.
