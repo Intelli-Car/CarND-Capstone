@@ -13,6 +13,16 @@ This is the project repo for the final project of the Udacity Self-Driving Car N
 [image8]: ./readme_images/result_ssd_mobilenet_v1_coco_on_sim_data.jpg "Result SSD MobilenetV1 on Sim Data"
 [image9]: ./readme_images/loss_graph_ssd_mobilenet_v1_coco_on_real_data.jpg "Loss Graph SSD MobilenetV1 On Real Data"
 
+## Team "Intelli-car"
+
+|              |     Name         | Email | Timezone | Slack |
+|--------------|------------------|----------|----------|--------------------------------|
+| Team lead    | Hasan Chowdhury  | shemonc@gmail.com | @shemon | UTC-5 (Ottawa) |
+|              | Qingqing Xia     | qingqing.xia.2015@gmail.com | @qingqing | UTC+1 (Germany) |
+|              | Ananthesh J Shet | shetanantheshnlsv@yahoo.in  |  @anantheshjshet | UTC+05:30(India) |
+|              | Andre Marais     | agmarais@gmail.com |  @veldrin | UTC + 2 (South Africa) |
+|              | HanByul Yang     | hanbyul.yang@gmail.com | @hb | UTC+09:00 (South Korea) |
+
 ### Data Preparation
 
 We got the images of traffic light captured by simulator's camera and that by Carla's(Udacity's self driving car) camera from <link to the dataset>. We placed simulator and real car's images under `sim_data` and `real_data` folder respectively. Further divided each of them into `train` and `test` folders with 30% images in `test` folder. 
