@@ -15,7 +15,7 @@ This is the project repo for the final project of the Udacity Self-Driving Car N
 [image7]: ./readme_images/loss_graph_ssd_mobilenet_v1_coco_on_sim_data.jpg "Loss Graph SSD MobilenetV1 On Sim Data"
 [image8]: ./readme_images/result_ssd_mobilenet_v1_coco_on_sim_data.jpg "Result SSD MobilenetV1 on Sim Data"
 [image9]: ./readme_images/loss_graph_ssd_mobilenet_v1_coco_on_real_data.jpg "Loss Graph SSD MobilenetV1 On Real Data"
-[image10]: ./readme_images/traffic_node.jpg "Traffic Node"
+[image10]: ./readme_images/traffic_node.jpg =250x150 "Traffic Node"
 [image11]: ./readme_images/waypoint_updater.png "Waypoint Updater Node"
 [image12]: ./readme_images/dbw_node.png "DBW Node"
 [image13]: ./readme_images/autoware_node.png "Autoware Node"
@@ -48,7 +48,7 @@ part of a 'Self Driving' vehicle susbsystems
 #### 2.1 Traffic Light detection Node
 This node takes in data from the /image_color, /current_pose, and /base_waypoints topics and publishes the locations to stop for red traffic lights to the /traffic_waypoint topic.
 
-[alt text][image0]
+[alt text][image10]
 
 Here we introduce a new ROS message named Light (int32 index, uint8 sate) to publish not only the index of the closest traffic light but also the state(COLOR) of it into node /traffic_waypoint. Waypoint updater node (see bellow) will use this information
 to slow down for a closest Yellow or RED light and will eventually stop when the closest light is RED; in all other cases (GREEN, UNKNOWN) the car will continue to move on with in given Speed limit.
