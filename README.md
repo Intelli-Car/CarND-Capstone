@@ -30,7 +30,7 @@ This is the project repo for the final project of the Udacity Self-Driving Car N
 |              | HanByul Yang     | hanbyul.yang@gmail.com | @hb | UTC+09:00 (South Korea) |
 | Team lead    | Hasan Chowdhury  | shemonc@gmail.com | @shemon | UTC-5 (Ottawa) |
 
-### 1 Submission checklist and requirements
+### 1. Submission checklist and requirements
 
 - Launch correctly using the launch files provided in the capstone repo. The launch/styx.launch and launch/site.launch are used to test code in the simulator and on the vehicle respectively. The submission size limit is within 2GB.  
 - Car smoothly follows waypoints in the simulator.  
@@ -53,7 +53,7 @@ This node takes in data from the /image_color, /current_pose, and /base_waypoint
 Here we introduce a new ROS message named Light (int32 index, uint8 sate) to publish not only the index of the closest traffic light but also the state(COLOR) of it into node /traffic_waypoint. Waypoint updater node (see bellow) will use this information
 to slow down for a closest Yellow or RED light and will eventually stop when the closest light is RED; in all other cases (GREEN, UNKNOWN) the car will continue to move on with in given Speed limit.
 
-For Details on Traffic light detection see the section bellow "2.1.a. Traffic Light detection"
+For Details on Traffic light detection see the section bellow "2.1.1. Traffic Light detection"
 
 #### 2.2 Waypoint updater Node
 
@@ -67,13 +67,13 @@ The purpose of this node is to update the target velocity property of each waypo
 * if the near by traffic light state is green or there is no traffic light the car will continue with regular speed while
   not exceeding the maximum allowed velocity limit in Kmph. Maximum allowed velocity is configured in ros/src/waypoint_loader.launch and in ros/src/waypoint_loader_site.launch and is retrieved as ros param from /waypoint_loader/velocity  by this node and update the lookahead waypoint's velocity accordingly  
 
-### 2.3  Autoware Node
+#### 2.3  Autoware Node
 
 A package containing code from Autoware which subscribes to /final_waypoints and publishes target vehicle linear and angular velocities in the form of twist commands to the /twist_cmd topic.
 ![alt text][image13]
 
 
-### 2.4 Drive by Wire(DBW) Node
+#### 2.4 Drive by Wire(DBW) Node
 
 Carla is equipped with a drive-by-wire (dbw) system, meaning the throttle, brake, and steering have electronic control. This package contains the files that are responsible for control of the vehicle: the node dbw_node.py and the file twist_controller.py, along with a pid and lowpass filter is used to finally drive the car. The dbw_node subscribes to the /current_velocity topic along with the /twist_cmd topic to receive target linear and angular velocities. 
 
@@ -81,10 +81,14 @@ Carla is equipped with a drive-by-wire (dbw) system, meaning the throttle, brake
 
 Additionally, this node will subscribe to /vehicle/dbw_enabled, which indicates if the car is under dbw or driver control. This node will publish throttle, brake, and steering commands to the /vehicle/throttle_cmd, /vehicle/brake_cmd, and /vehicle/steering_cmd topics.
 
-For details on DBW and the PID controller see sectin "2.4.a. Drive by Wire(DBW) and PID Controller"
+For details on DBW and the PID controller see sectin "2.4.1. Drive by Wire(DBW) and PID Controller"
 
-### 2.1.a Traffic Light detection 
-#### Data Preparation
+### 2.1.1 Traffic Light detection
+
+#### 2.1.1.a Training
+
+
+##### 2.1.1.a.1 Data Preparation
 
 We got the images of traffic light captured by simulator's camera and that by Carla's(Udacity's self driving car) camera from <link to the dataset>. We placed simulator and real car's images under `sim_data` and `real_data` folder respectively. Further divided each of them into `train` and `test` folders with 30% images in `test` folder. 
 
@@ -112,7 +116,7 @@ labelImg creates `.xml` for each image with information of the image itself and 
 
 Using a helper function [`xml_to_csv.py`](https://github.com/datitran/raccoon_dataset/blob/master/xml_to_csv.py), all the `.xml` are merged into a single `.csv` file. Another helper function [`generate_tfrecord.py`](https://github.com/datitran/raccoon_dataset/blob/master/generate_tfrecord.py) is used to generate the TFRecord `.record` file which is the file format needed by TensorFlow. Slight modifications were made to the above two helper functions and are placed in this repository.
 
-#### Data Exploration
+##### 2.1.1.a.2 Data Exploration
 
 The dataset has 367 1368x1096 `real` images and 280 800x600 `sim` images out of which 30% of each is used as `test` images. The `real` images maynot have any traffic light object or have only one traffic light object. The `sim` images too maynot have any traffic light object or have one or more traffic light object. So the number of objects for classification is 347 `real` objects and 867 `sim` objects. Below is the distribution of objects based on label:
 
@@ -120,7 +124,7 @@ The dataset has 367 1368x1096 `real` images and 280 800x600 `sim` images out of 
 
 As seen from the above image, the distribution is not same. The `real` data has more of `green` label and the `sim` data has more of `red` label. This imbalance in the dataset will lead the model to be biased towards the label which is more in number. This issue can be fixed by adding more of those images with labels which are less in number. While adding the images, care should be taken not to add similar images but to add images with translation and/or images with different brightness/saturation/hue etc.
 
-#### Model
+##### 2.1.1.a.3 Model Selection
 
 We tried 3 models from the [Tensorflow detection model zoo](https://github.com/tensorflow/models/blob/master/research/object_detection/g3doc/detection_model_zoo.md). These models are pre-trained on the [COCO dataset](http://mscoco.org/), the [Kitti dataset](http://www.cvlibs.net/datasets/kitti/), and the [Open Images dataset](https://github.com/openimages/dataset). The 3 models we choose are ssd_mobilenet_v1_coco, ssd_inception_v2_coco and faster_rcnn_resnet101_coco. 
 
@@ -138,11 +142,29 @@ Next we trained the `real` data on same model for 5000 steps and the loss graph 
 
 The TotalLoss was really bad and was around ~7.5 and this model couldnt classify any objects.
 
+##### 2.1.1.a.4 Training and exporting for inference
+TBD from HB's branch
+
+#### 2.1.1.b. Classification
+TBD from HB's Branch
+
 ### 2.4.a. Drive by Wire(DBW) and PID Controller
 TBD
 
+#### 2.4.1.a PID 
+P -> why  
+I -> why  
+D -> why  
+
+
+Low pass filter 
+
 ### 3. References
 TBD
+[I'm an inline-style link](https://www.google.com)
+
+[I'm an inline-style link](https://www.google.com)
+
 
 ## Installation
 
