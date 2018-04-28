@@ -15,7 +15,7 @@ This is the project repo for the final project of the Udacity Self-Driving Car N
 [image7]: ./readme_images/loss_graph_ssd_mobilenet_v1_coco_on_sim_data.jpg "Loss Graph SSD MobilenetV1 On Sim Data"
 [image8]: ./readme_images/result_ssd_mobilenet_v1_coco_on_sim_data.jpg "Result SSD MobilenetV1 on Sim Data"
 [image9]: ./readme_images/loss_graph_ssd_mobilenet_v1_coco_on_real_data.jpg "Loss Graph SSD MobilenetV1 On Real Data"
-[image10]: ./readme_images/traffic_node.png =250x150 "Traffic Node"
+[image10]: ./readme_images/traffic_node.png "Traffic Node"
 [image11]: ./readme_images/waypoint_updater.png "Waypoint Updater Node"
 [image12]: ./readme_images/dbw_node.png "DBW Node"
 [image13]: ./readme_images/autoware_node.png "Autoware Node"
