@@ -1,6 +1,3 @@
-TBD(still continuing :-), will be done soon )
-
-
 This is the project repo for the final project of the Udacity Self-Driving Car Nanodegree: Programming a Real Self-Driving Car. For more information about the project, see the project introduction [here](https://classroom.udacity.com/nanodegrees/nd013/parts/6047fe34-d93c-4f50-8336-b70ef10cb4b2/modules/e1a23b06-329a-4684-a717-ad476f0d8dff/lessons/462c933d-9f24-42d3-8bdc-a08a5fc866e4/concepts/5ab4b122-83e6-436d-850f-9f4d26627fd9).
 
 
@@ -20,7 +17,7 @@ This is the project repo for the final project of the Udacity Self-Driving Car N
 [image12]: ./readme_images/dbw_node.png "DBW Node"
 [image13]: ./readme_images/autoware_node.png "Autoware Node"
 
-## The team "Intelli-car"
+### The team "Intelli-car"
 
 |              |     Name         | Email | Timezone | Slack |
 |--------------|------------------|----------|----------|--------------------------------|
@@ -38,11 +35,11 @@ This is the project repo for the final project of the Udacity Self-Driving Car N
 - Car stops at traffic lights when needed.  
 - Depending on the state of /vehicle/dbw_enabled, Car stop and restart PID controllers  
 - Publish throttle, steering, and brake commands at 50hz.  
+- Finally for Simulated Track 1 we tested with velocity 40 Kmph and for track 2, 10 Kmph as the default velocity given in corresponding launch file.[I will double check this and remove this comment after that]
 
 ### 2. System Architecture Diagram
 
-Following diagram describe the overall system archicture showing ROS nodes and topics used to communicate the different 
-part of a 'Self Driving' vehicle susbsystems 
+Following diagram describes the overall system archicture showing ROS nodes and topics those are used to communicate among different parts of this 'Self Driving' vehicle susbsystems for this project
 ![alt text][image0]
 
 #### 2.1 Traffic Light detection Node
@@ -50,14 +47,14 @@ This node takes in data from the /image_color, /current_pose, and /base_waypoint
 
 ![alt text][image10]
 
-Here we introduce a new ROS message named Light (int32 index, uint8 sate) to publish not only the index of the closest traffic light but also the state(COLOR) of it into node /traffic_waypoint. Waypoint updater node (see bellow) will use this information
-to slow down for a closest Yellow or RED light and will eventually stop when the closest light is RED; in all other cases (GREEN, UNKNOWN) the car will continue to move on with in given Speed limit.
+Here we introduce a new ROS message named Light (int32 index, uint8 sate) to publish not only the index of the closest traffic light but also the state(COLOR) of it and publish into node /traffic_waypoint. Waypoint updater node (see bellow) will use this information
+to slow down for a closest Yellow or RED light and will eventually stop when the closest light is RED; in all other cases (GREEN, UNKNOWN) the car will continue to move on within given speed limit.
 
 For Details on Traffic light detection see the section bellow "2.1.1. Traffic Light detection"
 
 #### 2.2 Waypoint updater Node
 
-The purpose of this node is to update the target velocity property of each waypoint based on traffic light and obstacle detection data. This node will subscribe to the /base_waypoints, /current_pose, /obstacle_waypoint, and /traffic_waypoint topics, and publish a list of waypoints ahead of the car with target velocities to the /final_waypoints topic.
+The purpose of this node is to update the target velocity property of each waypoint based on traffic light and obstacle detection data. This node will subscribe to the /base_waypoints, /current_pose, /obstacle_waypoint, and /traffic_waypoint topics, and publish a list of waypoints ahead of the car with target velocities to the /final_waypoints topic. Here we limite the lookahead waypoint into 50 points and was working with no issues.
 
 ![alt text][image11]
 
@@ -84,13 +81,22 @@ Additionally, this node will subscribe to /vehicle/dbw_enabled, which indicates 
 For details on DBW and the PID controller see sectin "2.4.1. Drive by Wire(DBW) and PID Controller"
 
 ### 2.1.1 Traffic Light detection
+This involves  
+- Training  
+  - Data collection  
+    - Given rosbag data was used to capture images for training 
+    - Label the data
+    - select a proper Model (Meta-architecture and Feature Extractor) to train with the Label images
+    - export the inference graph
+- Classification
+    - Get the realtime image from Carla's Camera
+    - Use the frozen inference graph above to classify if there is a traffic light in the image and what is the color of this light.
 
 #### 2.1.1.a Training
 
-
 ##### 2.1.1.a.1 Data Preparation
 
-We got the images of traffic light captured by simulator's camera and that by Carla's(Udacity's self driving car) camera from <link to the dataset>. We placed simulator and real car's images under `sim_data` and `real_data` folder respectively. Further divided each of them into `train` and `test` folders with 30% images in `test` folder. 
+We got the images of traffic light captured by simulator's camera and that by Carla's(Udacity's self driving car) rosbag [here](https://drive.google.com/file/d/0B2_h37bMVw3iYkdJTlRSUlJIamM/view). We placed simulator and real car's images under `sim_data` and `real_data` folder respectively. Further divided each of them into `train` and `test` folders with 30% images in `test` folder. 
 
 ![alt text][image1]
 
@@ -140,31 +146,70 @@ Next we trained the `real` data on same model for 5000 steps and the loss graph 
 
 ![alt text][image9]
 
-The TotalLoss was really bad and was around ~7.5 and this model couldnt classify any objects.
+The TotalLoss was really bad and was around ~7.5 and this model couldnt classify any objects.  
+
+We tested the SSD_INCEPTION, SSD_MOBILE_V2 and FASTER_RCNN frozen models supplied by Tensorflow, and eventually settled for the F-RCNN model due to its remarkable speed and accuracy
+
+For more detail, see [F-RCNN model for Intelli-Car](https://github.com/Intelli-Car/CarND-Capstone/tree/Hanbyul/ros/src/tl_detector/README.md)
 
 ##### 2.1.1.a.4 Training and exporting for inference
-TBD from HB's branch
+
+All the required steps for training and exporting the inference graph are describe details  [here](https://github.com/Intelli-Car/CarND-Capstone/tree/Hanbyul/ros/src/tl_detector/light_classification/README.md)
 
 #### 2.1.1.b. Classification
-TBD from HB's Branch
+
+tl_detector.py is subscribed for topics /image_color, which provides an image stream from the car's camera. These images are used to determine the color of upcoming traffic lights. Based on Camera encoding this images is converted into RGB i.e. (cv2.cvtColor(cv_image, cv2.COLOR_BGR2RGB)) before feed into for classification.  
+
+The classification module, tl_classifier.py is based on [CarND Object Detection Lab](https://github.com/udacity/CarND-Object-Detection-Lab)  A new ros parameter named 'model_path' has introduced in tl_detector/launch/tl_detector.launch and in tl_detector/launch/tl_detector_site.launch to locate the frozen inference graph at runtime. By default it is set to FRCNN graph for both Simulator and Real track i.e. tl_detector/light_classification/frozen_models/sim/faster_rcnn_resnet101_coco_2018_01_28/frozen_inference_graph.pb and tl_detector/light_classification/frozen_models/real/faster_rcnn_resnet101_coco_2018_01_28/frozen_inference_graph.pb in corresponding launch file above. Inference graph for ssd_moobile_v2 or ssd_inception_v2 can be found [here](https://drive.google.com/drive/folders/1hhoOHrnMFiirXvyDQtzZxWZxZHVLD3lr)
 
 ### 2.4.a. Drive by Wire(DBW) and PID Controller
-TBD
+
+Once messages are being published to /final_waypoints, the vehicle's waypoint follower publishes twist commands to the /twist_cmd topic. The drive-by-wire node (dbw_node.py) subscribe to /twist_cmd and use various controllers to provide appropriate throttle, brake, and steering commands. These commands can then be published to the following topics:  
+
+/vehicle/throttle_cmd  
+/vehicle/brake_cmd  
+/vehicle/steering_cmd  
 
 #### 2.4.1.a PID 
-P -> why  
-I -> why  
-D -> why  
 
+We use the given simple pid controller(pid.py) was use to smoothly drive the car in both track, autonomously.
 
-Low pass filter 
+Since a safety driver may take control of the car during testing, we can not assume that the car is always following the PID commands. If a safety driver does take over, the PID controller will mistakenly accumulate error. For this reason dbw_node.py is subscribed to ros topic /vehicle/dbw_enabled and when this is off, it resets the PID controller's error function to zero.
+
+P Component  
+
+P controller steers the car proportion(inversely, Tau) to Cross Track Error. In this project where the car is driven by the waypoints, CTE was simulated as  
+
+error = Desired velocity - current velocity of the car at a time  
+
+If this number is negative means we want to reduce this error.  
+
+In other word if the above is positive, car drives faster and if negative, car slows down. With a higher Tau the car will oscillate faster.
+
+We used Kp as 0.4, other variation we tried is 0.8 with no significant impact 
+
+D Component  
+
+In PD-controller, for this prooject, when the car is reducing the speed to reduce the error, it won’t just go shooting for the reference velocity but it will notice that it is already reducing the error and as the error is becoming smaller overtime, it counter steers i.e it steers up again, this will allow it to gracefully approach the reference velocity
+
+We do not use the D controller  here so Kd was set to zero.
+
+I Component  
+
+A car might have a form of wheels not aligned appropriately, in robotics it is called Systematic bias. Systematic bias will significantly increase the CTE in PD controller, so the differential term will not be able to compensate for this. This is where the I components come to play which is measured by the integral or the sum of the CTEs over time. Integral coefficient (Ki) should be carefully optimized in small steps as it has a large impact on the overall performance. We use a small value for ki = 0.1 based on trail and error  
+
+Low pass filter  
+An average of current velocities are used to derive the current velocity in order to avoid any sporadic spike.  
+
 
 ### 3. References
-TBD
-[I'm an inline-style link](https://www.google.com)
 
-[I'm an inline-style link](https://www.google.com)
-
+[Speed/accuracy trade-offs for modern convolutional object detectors](https://arxiv.org/pdf/1611.10012.pdf)
+[SSD: Single Shot MultiBox Detector](https://arxiv.org/pdf/1512.02325.pdf)
+[MobileNets: Efficient Convolutional Neural Networks for Mobile Vision Applications](https://arxiv.org/pdf/1704.04861.pdf)
+[TensorFlow Models](https://github.com/tensorflow/models)
+[The PASCAL Visual Object Classes Homepage](http://host.robots.ox.ac.uk/pascal/VOC/)
+[udacity/CarND-Object-Detection-Lab](https://github.com/udacity/CarND-Object-Detection-Lab)
 
 ## Installation
 
