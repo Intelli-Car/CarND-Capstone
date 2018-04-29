@@ -100,11 +100,11 @@ We got the images of traffic light captured by simulator's camera and that by Ca
 
 ![alt text][image1]
 
-This dataset had a lot of redundant images, meaning, the images were very similar to each other. A series of similar images is shown below:
+Please note that the dataset had a lot of redundant images, meaning, the images were very similar to each other. A series of similar images is shown below:
 
 ![alt text][image6]
 
-These images wouldnt add any "more" information and a model wouldnt learn anything new from these similar images. So we decided to remove them from the database.
+These images wouldnt add any "more" information and a model wouldnt learn anything new from these similar images.
 
 We used [labelImg](https://github.com/tzutalin/labelImg) to draw bounding box around the traffic light object(s) in the images and label them as either `red` or `yellow` or `green` or `unknown`
 
@@ -124,7 +124,7 @@ Using a helper function [`xml_to_csv.py`](https://github.com/datitran/raccoon_da
 
 ##### 2.1.1.a.2 Data Exploration
 
-The dataset has 367 1368x1096 `real` images and 280 800x600 `sim` images out of which 30% of each is used as `test` images. The `real` images maynot have any traffic light object or have only one traffic light object. The `sim` images too maynot have any traffic light object or have one or more traffic light object. So the number of objects for classification is 347 `real` objects and 867 `sim` objects. Below is the distribution of objects based on label:
+The dataset has 711 1368x1096 `real` images and 280 800x600 `sim` images out of which 30% of each is used as `test` images. The `real` images maynot have any traffic light object or have only one traffic light object. The `sim` images too maynot have any traffic light object or have one or more traffic light object. So the number of objects for classification is 648 `real` objects and 669 `sim` objects. Below is the distribution of objects based on label:
 
 ![alt text][image5]
 
