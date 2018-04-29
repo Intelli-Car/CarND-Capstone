@@ -198,8 +198,15 @@ I Component
 
 A car might have a form of wheels not aligned appropriately, in robotics it is called Systematic bias. Systematic bias will significantly increase the CTE in PD controller, so the differential term will not be able to compensate for this. This is where the I components come to play which is measured by the integral or the sum of the CTEs over time. Integral coefficient (Ki) should be carefully optimized in small steps as it has a large impact on the overall performance. We use a small value for ki = 0.1 based on trail and error  
 
-Low pass filter  
+* Low pass filter  
 An average of current velocities are used to derive the current velocity in order to avoid any sporadic spike.  
+
+* Throttle: The PID controller in the twist_controller.py calculates the throttles, which is calculated as Kp*vel_err + Ki * vel_err_integral + Kd* vel_err_delta. The vel_err is calculated as the difference between the target_vel and the current_vel. The PID controller is only active if the dbw is enabled to avoid error accumulation. The Kp, Ki, Kd provided by Udacity works well in the simulator. Some other value were experimented and no significant performance improve have been seen. For the car in real world further fine tuning might be necessary.
+
+* Steering: For getting the steering value we use the Yaw_controller.py provided to us. It adjusts the angular velocity setpoint, based on our current speed. It uses the formula linear velocity = angular velocity * radius in physics.
+
+* Brake: Torque value for braking = deceleration x vehicle mass x wheel radius
+
 
 
 ### 3. References
