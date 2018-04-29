@@ -204,12 +204,12 @@ An average of current velocities are used to derive the current velocity in orde
 
 ### 3. References
 
-[Speed/accuracy trade-offs for modern convolutional object detectors](https://arxiv.org/pdf/1611.10012.pdf)
-[SSD: Single Shot MultiBox Detector](https://arxiv.org/pdf/1512.02325.pdf)
-[MobileNets: Efficient Convolutional Neural Networks for Mobile Vision Applications](https://arxiv.org/pdf/1704.04861.pdf)
-[TensorFlow Models](https://github.com/tensorflow/models)
-[The PASCAL Visual Object Classes Homepage](http://host.robots.ox.ac.uk/pascal/VOC/)
-[udacity/CarND-Object-Detection-Lab](https://github.com/udacity/CarND-Object-Detection-Lab)
+[Speed/accuracy trade-offs for modern convolutional object detectors](https://arxiv.org/pdf/1611.10012.pdf)  
+[SSD: Single Shot MultiBox Detector](https://arxiv.org/pdf/1512.02325.pdf)  
+[MobileNets: Efficient Convolutional Neural Networks for Mobile Vision Applications](https://arxiv.org/pdf/1704.04861.pdf)  
+[TensorFlow Models](https://github.com/tensorflow/models)  
+[The PASCAL Visual Object Classes Homepage](http://host.robots.ox.ac.uk/pascal/VOC/)  
+[udacity/CarND-Object-Detection-Lab](https://github.com/udacity/CarND-Object-Detection-Lab)   
 
 ## Installation
 
