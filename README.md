@@ -35,7 +35,7 @@ This is the project repo for the final project of the Udacity Self-Driving Car N
 - Car stops at traffic lights when needed.  
 - Depending on the state of /vehicle/dbw_enabled, Car stop and restart PID controllers  
 - Publish throttle, steering, and brake commands at 50hz.  
-- Finally for Simulated Track 1 we tested with velocity 40 Kmph and for track 2, 10 Kmph as the default velocity given in corresponding launch file.[I will double check this and remove this comment after that]
+- Finally for Simulated Track 1 we tested with velocity 40 Kmph and for track 2, 10 Kmph as the default velocity given in corresponding launch file.
 
 ### 2. System Architecture Diagram
 

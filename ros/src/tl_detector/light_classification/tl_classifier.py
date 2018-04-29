@@ -100,6 +100,6 @@ class TLClassifier(object):
                 result_str = 'Yellow'
 
             score = scores[i]
-        rospy.logwarn('{}, score {:.4f}, time {:.1f} ms'.format(result_str, score, time_diff))
+        #rospy.logwarn('{}, score {:.4f}, time {:.1f} ms'.format(result_str, score, time_diff))
 
         return result
