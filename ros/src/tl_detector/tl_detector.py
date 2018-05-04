@@ -28,6 +28,17 @@ class TLDetector(object):
         self.waypoints_2d = None
         self.waypoint_tree = None
 
+        self.bridge = CvBridge()
+        self.model_path = rospy.get_param('~model_path')
+	# rospy.logwarn('model_path {}'.format(self.model_path))
+        
+	'''
+	Initialize the light classifier first before even we subscribe for
+        any topics to make sure when image_cb (see bellow) is called the classifier
+	has already initialized
+	'''
+	self.light_classifier = TLClassifier(self.model_path)
+ 
         sub1 = rospy.Subscriber('/current_pose', PoseStamped, self.pose_cb)
         sub2 = rospy.Subscriber('/base_waypoints', Lane, self.waypoints_cb)
 
@@ -44,12 +55,15 @@ class TLDetector(object):
         config_string = rospy.get_param("/traffic_light_config")
         self.config = yaml.load(config_string)
 
-        self.upcoming_red_light_pub = rospy.Publisher('/traffic_waypoint', Light, queue_size=1)
+        """
+	 Change this topic's name from /traffic_waypoint to /traffic_waypoint_intelli to avoid
+         any message type conflict for the same topic name; other student's project may run
+         before us and they might use the default message type Int32 for this topic but we 
+         are using different message type i.e Light, now with the change of the topic name
+         this conflict should not occur.
+        """
+	self.upcoming_red_light_pub = rospy.Publisher('/traffic_waypoint_intelli', Light, queue_size=1)
 
-        self.bridge = CvBridge()
-        self.model_path = rospy.get_param('~model_path')
-	# rospy.logwarn('model_path {}'.format(self.model_path))
-        self.light_classifier = TLClassifier(self.model_path)
         self.listener = tf.TransformListener()
 
         rospy.spin()
@@ -75,6 +89,15 @@ class TLDetector(object):
             msg (Image): image from car-mounted camera
 
         """
+
+	"""
+	    Do not process any images if the car has
+	    not started yet and we checked the camera
+	    check mark
+	"""
+	if self.pose == None or self.waypoints == None:
+	    return	
+
         self.has_image = True
         self.camera_image = msg
         light_wp, state = self.process_traffic_lights()
@@ -163,7 +186,10 @@ class TLDetector(object):
 
         # List of positions that correspond to the line to stop in front of for a given intersection
         stop_line_positions = self.config['stop_line_positions']
-        if(self.pose):
+        
+	# if we do not know the car position and the waypoint_tree has not initialized yet,
+        # no point of finding the closest waypoint
+	if(self.pose and self.waypoint_tree):
             car_wp_idx = self.get_closest_waypoint(self.pose.pose.position.x, self.pose.pose.position.y)
 
             #find the closest visible traffic light (if one exists)

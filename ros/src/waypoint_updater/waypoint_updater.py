@@ -60,7 +60,15 @@ class WaypointUpdater(object):
 
         rospy.Subscriber('/current_pose', PoseStamped, self.pose_cb)
         rospy.Subscriber('/base_waypoints', Lane, self.waypoints_cb)
-        rospy.Subscriber('/traffic_waypoint', Light, self.traffic_cb)
+        
+        """
+	 Change this topic's name from /traffic_waypoint to /traffic_waypoint_intelli to avoid
+         any message type conflict for the same topic name; other student's project may run
+         before us and they might use the default message type Int32 for this topic but we 
+         are using different message type i.e Light, now with the change of the topic name
+         this conflict should not occur.
+        """
+	rospy.Subscriber('/traffic_waypoint_intelli', Light, self.traffic_cb)
 
         # TODO: Add a subscriber for /obstacle_waypoint below
 
